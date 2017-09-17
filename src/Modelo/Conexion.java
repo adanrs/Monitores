@@ -129,8 +129,7 @@ public class Conexion {
                     rs2.next();
                     aux = rs2.getInt("BYTES");
                     regs += rs2.getInt("COUNT");
-                    System.out.println(aux);
-                    System.out.println(table.getName());
+                    
                     rs3 = stm.executeQuery("select count(index_name) indices from all_indexes where  table_name='" + table.getName() + "'");
                     rs3.next();
                     index = rs3.getInt("INDICES");

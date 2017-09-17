@@ -75,7 +75,7 @@ public class Vent1 extends JFrame implements ActionListener  {
                 {
                    int row= tabla.getSelectedRow();
                     int colum=tabla.getSelectedColumn();
-                    System.out.println(tabla.getValueAt(2, 1).toString());
+                    
                   if(colum ==0)
                 {
                    
