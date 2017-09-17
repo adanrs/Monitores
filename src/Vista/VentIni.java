@@ -41,7 +41,7 @@ public class VentIni extends JFrame implements ActionListener {
          GridBagConstraints gc = new GridBagConstraints();
 
         gc.insets=new Insets(10,10,0,50);
-        ini= new JButton("iniciar monitores");
+        ini= new JButton("iniciar monitor SGA");
         ini.setActionCommand("iniciar");
         ini.addActionListener(this);
         BHWM= new JButton("Bitácora HWM monitor SGA ");

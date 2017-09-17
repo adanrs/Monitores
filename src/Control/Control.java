@@ -62,23 +62,24 @@ public class Control {
 
     public void iniciar() throws InterruptedException, SQLException  {
         venini.ini();
-   
-
+        
     }
     
     public void inimon() throws SQLException, InterruptedException, IOException
-    {
-        System.out.println( cargarHWMSGA());
-//        ta = model.getSegmentos();
-//        ta = cargarHWM(ta);
-//        ventIni.init(ta);
-//        Thread.sleep(1000);
-//        initSGA();
+    {   
+        ta = model.getSegmentos();
+        ta = cargarHWM(ta);
+        ventIni.init(ta);
+        initSGA();
     }
 
     public void initSGA() throws InterruptedException {
-        String[] args = new String[]{};
-        Graf2.main(args);
+        Thread ventana_consumo = new Thread(() -> {
+            String[] args = new String[]{};
+            Graf2.main(args);
+        });
+        ventana_consumo.setDaemon(true);
+        ventana_consumo.start();
     }
 
     public void iniciarVent2(String select, int h) throws InterruptedException, SQLException, IOException {
