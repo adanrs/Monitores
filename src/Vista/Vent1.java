@@ -61,7 +61,7 @@ public class Vent1 extends JFrame implements ActionListener  {
         
     }
     
-    public void init(ArrayList<TableSpace> TaSpa)
+    public void init(ArrayList<TableSpace> TaSpa) throws InterruptedException
     {
         tabla.setModel(table);
         this.TaSpa=TaSpa;
@@ -118,17 +118,6 @@ public class Vent1 extends JFrame implements ActionListener  {
            
          
        panel.add(BorderLayout.CENTER,desplazamientoTabla);
-
-       
-        
-        
-       
-        
-        GridBagConstraints gc = new GridBagConstraints();
-
-        gc.insets=new Insets(10,10,0,50);
-        
-      
         JPanel p_opc=new JPanel();
         JButton b_config= new JButton("guardar HWM");
         b_config.setActionCommand("guardar");
@@ -144,6 +133,7 @@ public class Vent1 extends JFrame implements ActionListener  {
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       
         
     }
 

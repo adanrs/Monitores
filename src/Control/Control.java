@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import Vista.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 
 /**
  *
@@ -26,6 +31,7 @@ public class Control {
     private Calendar fecha;
     private float aux;
     private Graf2 vent;
+    private VentIni venini;
 
     public Control() throws SQLException {
         model = new Conexion();
@@ -51,17 +57,26 @@ public class Control {
 
         fecha = new GregorianCalendar();
         vent = new Graf2();
+        venini= new VentIni(this);
     }
 
-    public void iniciar() throws SQLException, InterruptedException {
-        ta = model.getSegmentos();
-        ta = cargarHWM(ta);
-        ventIni.init(ta);
-        initSGA();
+    public void iniciar() throws InterruptedException, SQLException  {
+        venini.ini();
+   
 
     }
+    
+    public void inimon() throws SQLException, InterruptedException, IOException
+    {
+        System.out.println( cargarHWMSGA());
+//        ta = model.getSegmentos();
+//        ta = cargarHWM(ta);
+//        ventIni.init(ta);
+//        Thread.sleep(1000);
+//        initSGA();
+    }
 
-    private void initSGA() throws InterruptedException {
+    public void initSGA() throws InterruptedException {
         String[] args = new String[]{};
         Graf2.main(args);
     }
@@ -150,6 +165,29 @@ public class Control {
         date = fecha.get(Calendar.DATE) + "-" + fecha.get(Calendar.MONTH) + "-" + fecha.get(Calendar.YEAR);
         sqlite.conectar();
         sqlite.query("INSERT INTO Hist (fecha,nombre,uso,porcentaje)VALUES ('" + date + "','" + nom + "'," + tam_to + "," + porc + ");");
+    }
+    
+    public void guardarHWMSGA(String hwm) throws IOException
+    {
+        File archivo = new File("HWMSGA.txt");
+        BufferedWriter bw;
+         bw = new BufferedWriter(new FileWriter(archivo));
+        bw.write(hwm);
+         bw.close();
+    }
+    
+        public int cargarHWMSGA() throws IOException
+    {
+        String cadena;
+        int hwm=0;
+        File archivo = new File("HWMSGA.txt");
+      FileReader f = new FileReader(archivo);
+      BufferedReader b = new BufferedReader(f);
+      while((cadena = b.readLine())!=null) {
+          hwm=Integer.parseInt(cadena);
+      }
+      b.close();
+      return hwm;
     }
 
 }
