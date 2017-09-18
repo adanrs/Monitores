@@ -41,7 +41,7 @@ public class Control {
         ta = new ArrayList<>();
         tab_graf = new TableSpace();
         sqlite = new SQLiteJDBC();
-//
+
 //         sqlite.conectar();
 //         sqlite.query("drop table TB_SPACES");
 //         sqlite.conectar();
@@ -57,7 +57,7 @@ public class Control {
 //         sqlite.conectar();
 //         sqlite.query("CREATE TABLE HWM " + "(nombre TEXT NOT NULL, HWM INT not null)");
 //         sqlite.conectar();
-//         sqlite.query("CREATE TABLE SGA " + "(fecha TEXT not null,hora TEXT NOT NULL,sql VARCHAR(255) NOT NULL, usuario TEXT NOT NULL, maquina TEXT NOT NULL)");
+//         sqlite.query("CREATE TABLE SGA " + "(fecha TEXT not null,hora TEXT NOT NULL,sql TEXT NOT NULL, usuario TEXT NOT NULL, maquina TEXT NOT NULL)");
 //         
 
         fecha = new GregorianCalendar();
