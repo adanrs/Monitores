@@ -1,6 +1,10 @@
 package Vista;
 
 import Modelo.Conexion;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,22 +20,33 @@ public class Graf2 extends Application {
 
     private int cont;
     private float total_memoria;
+    private int hwm;
 
     @Override
     public void start(Stage stage) {
         cont = 1;
+        try {
+            hwm = cargarHWMSGA();
+        } catch (IOException ex) {
+            Logger.getLogger(Graf2.class.getName()).log(Level.SEVERE, null, ex);
+        }
         final NumberAxis xAxis = new NumberAxis(0, 10, 1);
         final NumberAxis yAxis = new NumberAxis(0, 100, 10);
         Conexion c = new Conexion();
         c.conectar();
         xAxis.setLabel("Segundos");
-        yAxis.setLabel("Porciento");
+        yAxis.setLabel("Porcentaje");
         stage.setTitle("Consumo de memoria");
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        XYChart.Series hwm_series = new XYChart.Series();
         final AreaChart<Number, Number> ac = new AreaChart<>(xAxis, yAxis);
+        hwm_series.setName("HWM: "+hwm+"%");
+        hwm_series.getData().add(new XYChart.Data(0, hwm));
+        hwm_series.getData().add(new XYChart.Data(10, hwm));
         ac.setAnimated(false);
-        ac.getData().add(series);
+        ac.getData().addAll(series, hwm_series);
         Scene scene = new Scene(ac, 800, 600);
+        scene.getStylesheets().add("Vista/estilo.css");
         stage.setScene(scene);
         stage.show();
         try {
@@ -46,8 +61,13 @@ public class Graf2 extends Application {
                         @Override
                         public void run() {
                             series.getData().add(new XYChart.Data<>(0, 0));
+
                             try {
                                 float value = c.obtener_memoria_usada(total_memoria);
+                                if(value >= hwm){
+                                    //consulta para guardar usuario que se cago en todo
+                                    
+                                }
                                 series.getData().add(new XYChart.Data<>(cont, value));
                                 series.setName("Porcentaje de uso: " + value + "%");
                             } catch (InterruptedException ex) {
@@ -56,6 +76,8 @@ public class Graf2 extends Application {
                                 Logger.getLogger(Graf2.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             if (cont > 10) {
+                                ((XYChart.Data) (hwm_series.getData().get(0))).setXValue(cont - 10);
+                                ((XYChart.Data) (hwm_series.getData().get(1))).setXValue(cont);
                                 xAxis.setUpperBound(cont);
                                 xAxis.setLowerBound(cont - 10);
                                 series.getData().remove(0);
@@ -71,6 +93,19 @@ public class Graf2 extends Application {
         });
         updateThread.setDaemon(true);
         updateThread.start();
+    }
+
+    public int cargarHWMSGA() throws IOException {
+        String cadena;
+        int hwm = 0;
+        File archivo = new File("HWMSGA.txt");
+        FileReader f = new FileReader(archivo);
+        BufferedReader b = new BufferedReader(f);
+        while ((cadena = b.readLine()) != null) {
+            hwm = Integer.parseInt(cadena);
+        }
+        b.close();
+        return hwm;
     }
 
     public static void main(String[] args) {

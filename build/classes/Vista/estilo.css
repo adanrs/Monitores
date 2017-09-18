@@ -1,0 +1,12 @@
+/* 
+    Created on : 17-sep-2017, 22:06:22
+    Author     : Casa
+*/
+.default-color0.chart-area-symbol { -fx-background-color: #228b22, #228b22; }
+.default-color1.chart-area-symbol { -fx-background-color: #dc143c, #fffacd; }
+ 
+.default-color0.chart-series-area-line { -fx-stroke: #228b22; }
+.default-color1.chart-series-area-line { -fx-stroke: #dc143c; }
+ 
+.default-color0.chart-series-area-fill { -fx-fill: #228b2255; }
+.default-color1.chart-series-area-fill { -fx-fill: rgba(0,0,0,0); }

@@ -57,16 +57,15 @@ public class Control {
 
         fecha = new GregorianCalendar();
         vent = new Graf2();
-        venini= new VentIni(this);
+        venini = new VentIni(this);
     }
 
-    public void iniciar() throws InterruptedException, SQLException  {
+    public void iniciar() throws InterruptedException, SQLException {
         venini.ini();
-        
+
     }
-    
-    public void inimon() throws SQLException, InterruptedException, IOException
-    {   
+
+    public void inimon() throws SQLException, InterruptedException, IOException {
         ta = model.getSegmentos();
         ta = cargarHWM(ta);
         ventIni.init(ta);
@@ -167,28 +166,12 @@ public class Control {
         sqlite.conectar();
         sqlite.query("INSERT INTO Hist (fecha,nombre,uso,porcentaje)VALUES ('" + date + "','" + nom + "'," + tam_to + "," + porc + ");");
     }
-    
-    public void guardarHWMSGA(String hwm) throws IOException
-    {
+
+    public void guardarHWMSGA(String hwm) throws IOException {
         File archivo = new File("HWMSGA.txt");
         BufferedWriter bw;
-         bw = new BufferedWriter(new FileWriter(archivo));
+        bw = new BufferedWriter(new FileWriter(archivo));
         bw.write(hwm);
-         bw.close();
+        bw.close();
     }
-    
-        public int cargarHWMSGA() throws IOException
-    {
-        String cadena;
-        int hwm=0;
-        File archivo = new File("HWMSGA.txt");
-      FileReader f = new FileReader(archivo);
-      BufferedReader b = new BufferedReader(f);
-      while((cadena = b.readLine())!=null) {
-          hwm=Integer.parseInt(cadena);
-      }
-      b.close();
-      return hwm;
-    }
-
 }
