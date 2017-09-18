@@ -49,18 +49,24 @@ public class Control {
 //         sqlite.conectar();
 //         sqlite.query("drop table HWM");
 //         sqlite.conectar();
+//         sqlite.query("drop table SGA");
+//         sqlite.conectar();
 //         sqlite.query("CREATE TABLE TB_SPACES " + "(fecha TEXT not null,nombre TEXT NOT NULL, MB_TABLAS float not null, usado float NOT NULL,TasaTrans float not null,registros INT NOT NULL)");
 //         sqlite.conectar();
 //         sqlite.query("CREATE TABLE Hist " + "(fecha TEXT not null,nombre TEXT NOT NULL, uso INT not null, porcentaje INT NOT NULL)");
 //         sqlite.conectar();
 //         sqlite.query("CREATE TABLE HWM " + "(nombre TEXT NOT NULL, HWM INT not null)");
+//         sqlite.conectar();
+//         sqlite.query("CREATE TABLE SGA " + "(fecha TEXT not null,hora TEXT NOT NULL,sql VARCHAR(255) NOT NULL, usuario TEXT NOT NULL, maquina TEXT NOT NULL)");
+//         
 
         fecha = new GregorianCalendar();
         vent = new Graf2();
-        venini = new VentIni(this);
+        
     }
 
-    public void iniciar() throws InterruptedException, SQLException {
+    public void iniciar()  {
+        venini = new VentIni(this);
         venini.ini();
 
     }
@@ -118,6 +124,7 @@ public class Control {
     }
 
     private void guardar(TableSpace tab) throws SQLException {
+        sqlite.conectar();
         sqlite.query("INSERT INTO TB_SPACES (fecha,nombre,MB_TABLAS,usado,tasatrans,registros)VALUES ('" + tab.getFecha()
                 + "','" + tab.getNombre() + "'," + tab.getUso() + "," + tab.getTam_total() + "," + tab.getTasatrans() + "," + tab.getFree() + ");");
     }
@@ -134,7 +141,7 @@ public class Control {
         sqlite.conectar();
         sqlite.query("CREATE TABLE HWM " + "(nombre TEXT NOT NULL, HWM INT not null)");
         for (int i = 0; i < porc.size(); i++) {
-//         sqlite.conectar();
+         sqlite.conectar();
             sqlite.query("INSERT INTO HWM (nombre,HWM)VALUES ('" + porc.get(i).getNombre() + "'," + porc.get(i).getTam_total() + ");");
         }
 
@@ -164,6 +171,7 @@ public class Control {
         String date = "";
         date = fecha.get(Calendar.DATE) + "-" + fecha.get(Calendar.MONTH) + "-" + fecha.get(Calendar.YEAR);
         sqlite.conectar();
+        sqlite.conectar();
         sqlite.query("INSERT INTO Hist (fecha,nombre,uso,porcentaje)VALUES ('" + date + "','" + nom + "'," + tam_to + "," + porc + ");");
     }
 
@@ -173,5 +181,11 @@ public class Control {
         bw = new BufferedWriter(new FileWriter(archivo));
         bw.write(hwm);
         bw.close();
+    }
+    
+    public void ventaBitSGA() throws SQLException
+    {
+        sqlite.conectar();
+        BitacoraSGA ven= new BitacoraSGA(this,sqlite.selectBSGA());
     }
 }

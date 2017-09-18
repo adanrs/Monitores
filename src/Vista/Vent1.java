@@ -101,7 +101,7 @@ public class Vent1 extends JFrame implements ActionListener  {
         desplazamientoTabla.setViewportView(tabla);
           this.gestor=gestor;
         String[] columns = new String[]{
-            //"Id", "N", "Hourly Rate", "Part Time" 
+        
             "Nombre","HWM"
         };
         
@@ -129,7 +129,7 @@ public class Vent1 extends JFrame implements ActionListener  {
         p_opc.add(b_config,BorderLayout.CENTER);
         add(panel,BorderLayout.CENTER);
         add(p_opc,BorderLayout.SOUTH);
-       setSize(500,300);
+       setSize(600,300);
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

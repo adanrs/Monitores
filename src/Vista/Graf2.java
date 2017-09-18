@@ -1,11 +1,16 @@
 package Vista;
 
+import Control.Control;
 import Modelo.Conexion;
+import Modelo.SQLiteJDBC;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -21,6 +26,7 @@ public class Graf2 extends Application {
     private int cont;
     private float total_memoria;
     private int hwm;
+    private Control gestor;
 
     @Override
     public void start(Stage stage) {
@@ -45,7 +51,7 @@ public class Graf2 extends Application {
         hwm_series.getData().add(new XYChart.Data(10, hwm));
         ac.setAnimated(false);
         ac.getData().addAll(series, hwm_series);
-        Scene scene = new Scene(ac, 800, 600);
+        Scene scene = new Scene(ac, 600, 300);
         scene.getStylesheets().add("Vista/estilo.css");
         stage.setScene(scene);
         stage.show();
@@ -66,7 +72,7 @@ public class Graf2 extends Application {
                                 float value = c.obtener_memoria_usada(total_memoria);
                                 if(value >= hwm){
                                     //consulta para guardar usuario que se cago en todo
-                                    
+                                    BSGA(c.BitSGA());
                                 }
                                 series.getData().add(new XYChart.Data<>(cont, value));
                                 series.setName("Porcentaje de uso: " + value + "%");
@@ -107,8 +113,23 @@ public class Graf2 extends Application {
         b.close();
         return hwm;
     }
+     public void BSGA(ArrayList<String> bit) throws SQLException
+    {
+        SQLiteJDBC sqlite= new SQLiteJDBC();
+       Calendar fecha=new GregorianCalendar();
+       String date = "";
+       String hour="";
+        date = fecha.get(Calendar.DATE) + "-" + fecha.get(Calendar.MONTH) + "-" + fecha.get(Calendar.YEAR);
+        hour= fecha.get(Calendar.HOUR)+":"+fecha.get(Calendar.MINUTE)+":"+fecha.get(Calendar.SECOND);
+        sqlite.conectar();
+         sqlite.query("INSERT INTO SGA (fecha,hora,sql,usuario,maquina)VALUES ('" + date
+                + "','" + hour + "','" + bit.get(0)+"','"+bit.get(1)+"','"+bit.get(2)+"');");
+         sqlite=null;
+        
+    }
 
     public static void main(String[] args) {
         launch(args);
+        
     }
 }

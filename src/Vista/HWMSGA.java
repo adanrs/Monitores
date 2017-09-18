@@ -29,12 +29,14 @@ public class HWMSGA extends JFrame implements ActionListener {
     private Control gestor;
 JTextField BHWM;
     public HWMSGA(Control g) {
+         super("HWM monitor SGA");
         gestor=g;
     }
     
     
       public void ini()
     {
+       
          GridBagConstraints gc = new GridBagConstraints();
 
         gc.insets=new Insets(10,10,0,50);
@@ -50,7 +52,7 @@ JTextField BHWM;
         panel.add(BHWM,BorderLayout.CENTER);
         panel.add(CHWM,BorderLayout.CENTER);
         this.add(panel,BorderLayout.CENTER);
-        setSize(500,300);
+        setSize(600,300);
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

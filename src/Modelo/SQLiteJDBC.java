@@ -54,6 +54,7 @@ static Statement stmt = null;
           //sql = ""; 
          stmt.executeUpdate(sql);
          System.out.println("Ejecutada");  
+         stmt.close();
    }catch ( Exception e ) {
          System.err.println( e.getClass().getName() + ": " + e.getMessage() );
          System.exit(0);
@@ -142,5 +143,30 @@ static Statement stmt = null;
 //      System.exit(0);
    }
    return sql;
+   }
+     
+      public  ArrayList<Bitacora> selectBSGA() throws SQLException{
+     
+          ArrayList<Bitacora> bit= new ArrayList<>();
+          try {
+              
+      stmt = c.createStatement();
+      ResultSet rs = stmt.executeQuery("select * from SGA;");
+     while ( rs.next() ) {
+         bit.add(new Bitacora(rs.getString("fecha"),rs.getString("hora"),rs.getString("sql"),rs.getString("usuario"),rs.getString("maquina")));
+       
+      }
+       
+     
+      rs.close();
+       
+        
+       stmt.close();
+      c.close();
+   }catch ( Exception e ) {
+      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+//      System.exit(0);
+   }
+   return bit;
    }
 }

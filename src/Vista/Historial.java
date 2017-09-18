@@ -74,7 +74,7 @@ public class Historial extends JFrame implements ActionListener {
 //        
 
         this.setTitle("Historial HWM");
-        this.setSize(600, 400);
+        this.setSize(600, 300);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setVisible(true);

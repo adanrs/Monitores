@@ -31,7 +31,7 @@ public class VentIni extends JFrame implements ActionListener {
 
     public VentIni(Control c) {
         
-         super("tablespace");
+         super("Monitores");
         gestor=c;
         panel= new JPanel();   
     }
@@ -55,7 +55,7 @@ public class VentIni extends JFrame implements ActionListener {
         panel.add(BHWM,BorderLayout.CENTER);
         panel.add(CHWM,BorderLayout.CENTER);
         this.add(panel,BorderLayout.CENTER);
-        setSize(500,300);
+        setSize(400,200);
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -87,6 +87,16 @@ public class VentIni extends JFrame implements ActionListener {
                 ven.ini();
               
             }
+        else
+                if(e.getActionCommand().equals("bita"))
+                {
+                    this.dispose();
+            try {
+                gestor.ventaBitSGA();
+            } catch (SQLException ex) {
+                Logger.getLogger(VentIni.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                }
     }
     
 }

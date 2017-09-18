@@ -69,8 +69,8 @@ public class Tabla extends JFrame implements ActionListener {
         //add the table to the frame
         this.add(new JScrollPane(table));
 
-        this.setTitle("Tabla");
-        this.setSize(600, 400);
+        this.setTitle("Datos tablespace");
+        this.setSize(600, 300);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setVisible(true);

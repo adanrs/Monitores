@@ -238,4 +238,38 @@ public class Conexion {
         }
         return total_memoria;
     }
+    
+    public ArrayList<String> BitSGA() throws SQLException
+    {
+        ArrayList<String> bit= new ArrayList<>();
+         try {
+            Statement stm = conexion.createStatement();
+            ResultSet rs = stm.executeQuery(" SELECT  SQL_TEXT, SN.OSUSER, SN.MACHINE\n" +
+            "FROM SYS.V_$SQL S, SYS.ALL_USERS U, V$SESSION SN\n" +
+            "WHERE S.PARSING_USER_ID = U.USER_ID\n" +
+            "AND SN.sql_hash_value = S.hash_value\n" +
+            "AND SN.sql_address = S.address\n" +
+            "ORDER BY S.LAST_LOAD_TIME");
+
+            getColumnNames(rs);
+            rs.next();
+            rs.next();
+
+                String a = rs.getString("SQL_TEXT");//Aqui deberia jalar el nombre de la columna
+                String b = rs.getString("OSUSER");
+                String c = rs.getString("MACHINE");
+                bit.add(a);
+                bit.add(b);
+                bit.add(c);
+                
+                
+               
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+
+        }
+
+        return bit;
+    }
 }

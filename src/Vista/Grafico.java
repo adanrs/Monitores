@@ -48,7 +48,7 @@ public class Grafico extends JFrame implements ActionListener {
       int[] param;
     public Grafico(Vent1 ven,ArrayList<TableSpace> tabl1,TableSpace aux2,Control c)
     {
-        super("tablespace");
+        super("tablespace: "+aux2.getNombre());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
      ven.dispose();   
@@ -107,7 +107,7 @@ public class Grafico extends JFrame implements ActionListener {
         gc.gridx = 0;
         gc.gridy = 0;
       
-        pArriba.add(new JLabel("INFORMACION:"), gc);
+        pArriba.add(new JLabel("TableSpace: "+ts.getNombre() ), gc);
         gc.gridx = 0;
         gc.gridy = 1;
       
@@ -116,12 +116,7 @@ public class Grafico extends JFrame implements ActionListener {
         gc.gridy = 2;
       
         pArriba.add(new JLabel("dias para alcanzar el total: "+d_tot), gc);
-        
-        gc.gridx = 1;
-        gc.gridy = 0;
-        pArriba.add(new JLabel("TableSpace: "+ts.getNombre() ), gc);
-        
-            
+       
         gc.gridx = 1;
         gc.gridy = 1;
         warning=new JLabel("memoria en uso: "+Float.toString(ts.getUso())+" mb");
@@ -139,7 +134,7 @@ public class Grafico extends JFrame implements ActionListener {
         gc.gridy = 2;       
         pArriba.add(new JLabel("porc. memoria libre: "+Float.toString(ts.porcent_free())+"%"), gc);
        
-        gc.gridx = 2;
+        gc.gridx = 1;
         gc.gridy = 0;
         pArriba.add(new JLabel("memoria total: "+Float.toString(ts.getTam_total())+" mb"), gc);
         
@@ -184,7 +179,7 @@ public class Grafico extends JFrame implements ActionListener {
     }
     hwm=posHWM(hwm);
     g.setColor(Color.RED);
-    System.out.println(hwm);
+  
     g.drawLine(hwm,150, hwm, 300);// variable cambiable
     
     int aux;   
