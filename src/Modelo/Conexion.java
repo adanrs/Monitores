@@ -20,6 +20,7 @@ import java.util.ArrayList;
  */
 public class Conexion {
 ///parametros de configuracion de usuario
+
     private Connection conexion;
     static String url = "jdbc:oracle:thin:@localhost:1521/XE"; //Descargar ojdbc6.jar e incluirlo en la libreria
     static String user = "system";
@@ -84,9 +85,8 @@ public class Conexion {
             getColumnNames(rs);
             while (rs.next()) {
 
-                 //Aqui deberia jalar el nombre de la columna
-
-                vec.add(new TableSpace(rs.getString("TABLESPACE_NAME"),0,0));
+                //Aqui deberia jalar el nombre de la columna
+                vec.add(new TableSpace(rs.getString("TABLESPACE_NAME"), 0, 0));
 
             }
         } catch (SQLException ex) {
@@ -96,18 +96,19 @@ public class Conexion {
 
         return vec;
     }
+
     // se obtienen las tablas de cada tablespace
     // se obtienen las tablas de la base de datos
 // meter aqui el query de contar los indices de una tabla
     public TableSpace getTable(String tablespace) throws InterruptedException {
         ArrayList<Table> vec = new ArrayList<>();
         Statement stm;
-        ResultSet rs, rs2,rs3;
+        ResultSet rs, rs2, rs3;
         String a, b;
         Table table;
         TableSpace registro;
-        int indices=0;
-        int mb=0,regs=0,index=0,aux=0;
+        int indices = 0;
+        int mb = 0, regs = 0, index = 0, aux = 0;
         try {
             stm = conexion.createStatement();
             rs = stm.executeQuery("select TABLE_NAME,OWNER from all_tables where tablespace_name = '" + tablespace + "'");
@@ -119,19 +120,19 @@ public class Conexion {
             }
             for (int i = 0; i < vec.size(); i++) {
                 table = vec.get(i);
-               try {
+                try {
                     rs2 = stm.executeQuery("select a.bytes, b.count from\n"
                             + "(SELECT sum(data_length) bytes FROM all_tab_columns where table_name = '" + table.getName() + "' group by table_name) a,\n"
                             + "(select count(*) count from " + table.getOwner() + "." + table.getName() + ") b");
                     rs2.next();
-                     aux=rs2.getInt("BYTES");
-                     regs+=rs2.getInt("COUNT");
-                     System.out.println(aux);
+                    aux = rs2.getInt("BYTES");
+                    regs += rs2.getInt("COUNT");
+                    System.out.println(aux);
                     System.out.println(table.getName());
-                      rs3 = stm.executeQuery("select count(index_name) indices from all_indexes where  table_name='"+table.getName()+"'");
-                      rs3.next();
-                      index=rs3.getInt("INDICES");                     
-                      mb+=((aux*0.30)*index);
+                    rs3 = stm.executeQuery("select count(index_name) indices from all_indexes where  table_name='" + table.getName() + "'");
+                    rs3.next();
+                    index = rs3.getInt("INDICES");
+                    mb += ((aux * 0.30) * index);
                 } catch (SQLException ex) {
                     System.out.println(ex.getMessage());
                 }
@@ -139,14 +140,13 @@ public class Conexion {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        
-        return registro=new TableSpace("",tablespace,0,mb,0,regs);
+
+        return registro = new TableSpace("", tablespace, 0, mb, 0, regs);
     }
 //obtener los byte
 
-  
     public TableSpace getGrafica(String selec) throws InterruptedException {
-        
+
         TableSpace table = null;
 
         try {
@@ -158,12 +158,10 @@ public class Conexion {
 
                 String a = rs.getString("TABLESPACE_NAME");//Aqui deberia jalar el nombre de la columna
 
-                
-                    if (selec.equals(a)) {
-                        table = new TableSpace(a, Float.parseFloat(rs.getString("TOTAL_SPACE_MB")), Float.parseFloat(rs.getString("FREE_SPACE_MB")));
-                        
-                    }
-                
+                if (selec.equals(a)) {
+                    table = new TableSpace(a, Float.parseFloat(rs.getString("TOTAL_SPACE_MB")), Float.parseFloat(rs.getString("FREE_SPACE_MB")));
+
+                }
 
             }
         } catch (SQLException ex) {
@@ -191,40 +189,34 @@ public class Conexion {
 
         }
     }
-    
-     public float [] executeQuery(String statement) throws InterruptedException {
-            int i=0;
-            float [] vec = new float[15];
-            while(i<15)
-            {
-                 float valor=0;
-                 
+
+    public float executeQuery(String statement) throws InterruptedException {
+        int i = 0;
+        float vec;
+        float valor = 0;
         try {
             Statement stm = conexion.createStatement();
             ResultSet rs = stm.executeQuery(statement);
-           // System.out.println("Ejecutando");
-             getColumnNames(rs);
+            // System.out.println("Ejecutando");
+            getColumnNames(rs);
             while (rs.next()) {
-              
-               String a = rs.getString("POOL");//Aqui deberia jalar el nombre de la columna
-                String b = rs.getString("FREE_MEMORY_IN_MB");// valor columnas 
-               
-              valor+= Float.parseFloat(b); // parsear valor 
-                System.out.println(a+" "+" "+b);   
-                
-               
+
+                String a = rs.getString("POOL");//Aqui deberia jalar el nombre de la columna
+                String b = rs.getString("MEMORIA_MB");// valor columnas 
+
+                valor += Float.parseFloat(b); // parsear valor 
+                System.out.println(a + " " + " " + b);
+
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        
-        valor=176- valor;// diferencia a la memoria libre 
-        valor=(valor/176)*100;// porcentaje de memoria usada 
-            System.out.println("%"+valor);
-            vec[i]=valor;
-            i++;
-          Thread.sleep(995);
-        }
-        return vec;  
+        int total_memoria = 176;
+        valor = total_memoria - valor;// diferencia a la memoria libre 
+        valor = (valor / total_memoria) * 100;// porcentaje de memoria usada 
+        System.out.println("%" + valor);
+        vec = valor;
+        i++;
+        return vec;
     }
 }

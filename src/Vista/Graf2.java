@@ -1,85 +1,74 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Vista;
 
-import java.sql.Date;
-import java.text.DecimalFormat;
+import Modelo.Conexion;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.stage.Stage;
+import javafx.scene.chart.AreaChart;
 
+public class Graf2 extends Application {
 
-import javax.swing.JOptionPane;
-import org.knowm.xchart.QuickChart;
-import org.knowm.xchart.SwingWrapper;
-import org.knowm.xchart.XYChart;
+    private int i;
+    private int cont;
 
-/**
- *
- * @author cesar
- */
-public class Graf2 {
-    double phase = 0;
-    double[][] initdata= new double[10][10];
-    final XYChart chart;
-    final SwingWrapper<XYChart> sw;
-    double cont;
-     DecimalFormat format;
-    public  Graf2()
-    {
-      chart = QuickChart.getChart("Monitor memoria Bases de Datos", "segundos", "porcentaje de memoria", "uso", initdata[0], initdata[1]);
- 
-    // Show it
-     sw= new SwingWrapper<XYChart>(chart);
-   
-    sw.displayChart("monitor");
-    cont=0;
-  format = new DecimalFormat("00.0");
+    @Override
+    public void start(Stage stage) {
+        i = 0;
+        cont = 0;
+        final NumberAxis xAxis = new NumberAxis(1, 10, 1);
+        final NumberAxis yAxis = new NumberAxis(0, 100, 10);
+        Conexion c = new Conexion();
+        c.conectar();
+        xAxis.setLabel("Segundos");
+        yAxis.setLabel("Porciento");
+        stage.setTitle("Consumo de memoria");
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        final AreaChart<Number, Number> ac = new AreaChart<>(xAxis, yAxis);
+        ac.setAnimated(false);
+        ac.getData().add(series);
+        Scene scene = new Scene(ac, 800, 600);
+        stage.setScene(scene);
+        stage.show();
+        Thread updateThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                float value = c.executeQuery("select POOL, Round(bytes/1024/1024,0) MEMORIA_MB From V$sgastat Where Name Like '%free memory%'");
+                                series.getData().add(new XYChart.Data<>(cont, value));
+                                series.setName("Porcentaje de uso: "+value+"%");
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Graf2.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            cont++;
+                            if (i > 9) {
+                                xAxis.setUpperBound(cont - 1);
+                                xAxis.setLowerBound(cont - 10);
+                                series.getData().remove(0);
+                            } else {
+                                i++;
+                            }
+                        }
+                    });
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        updateThread.setDaemon(true);
+        updateThread.start();
     }
-    
-    public boolean go(float[] vec) throws InterruptedException
-    {
-        
-            
- 
-      final double[][] data = getSineData(vec);
- 
-      chart.updateXYSeries("uso", data[0], data[1], null);
-      sw.repaintChart();
-    
 
-     
-      
-      
-    
-         return false;
+    public static void main(String[] args) {
+        launch(args);
     }
-    
-    private  double[][] getSineData(float[] phase) throws InterruptedException {
- 
-        
-    double[] xData = new double[15];
-    double[] yData = new double[15];
-    for (int i = 0; i < xData.length; i++) {
-            
-           
-           
-      xData[i] = cont;
-      yData[i] =Double.valueOf(format.format(phase[i]).replaceAll(",", "."));
-      cont++;
-        if(phase[i]>85)
-        {
-            JOptionPane.showMessageDialog(null, "porcentaje de memoria al"+phase[i], "alert", JOptionPane.WARNING_MESSAGE);
-       if(phase[i]==100)
-       {
-            JOptionPane.showMessageDialog(null, "porcentaje de memoria al 100% por favor cierre la ventana de grafico", "alert", JOptionPane.WARNING_MESSAGE);
-       }
-        }
-      
-    }
-    return new double[][] { xData, yData };
-  }
-    
-
 }
 
