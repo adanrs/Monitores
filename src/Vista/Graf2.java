@@ -1,6 +1,7 @@
 package Vista;
 
 import Modelo.Conexion;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -15,8 +16,9 @@ public class Graf2 extends Application {
 
     private int cont;
     private boolean first;
+    private float total_memoria;
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage)  {
         first = true;
         cont = 1;
         final NumberAxis xAxis = new NumberAxis(0, 10, 1);
@@ -33,6 +35,11 @@ public class Graf2 extends Application {
         Scene scene = new Scene(ac, 800, 600);
         stage.setScene(scene);
         stage.show();
+        try {
+            total_memoria = c.total_memoria();
+        } catch (SQLException ex) {
+            Logger.getLogger(Graf2.class.getName()).log(Level.SEVERE, null, ex);
+        }
         Thread updateThread = new Thread(() -> {
             while (true) {
                 try {
@@ -44,10 +51,12 @@ public class Graf2 extends Application {
                                 first = false;
                             }
                             try {
-                                float value = c.executeQuery();
+                                float value = c.executeQuery(total_memoria);
                                 series.getData().add(new XYChart.Data<>(cont, value));
                                 series.setName("Porcentaje de uso: "+value+"%");
                             } catch (InterruptedException ex) {
+                                Logger.getLogger(Graf2.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (SQLException ex) {
                                 Logger.getLogger(Graf2.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             if (cont > 10) {

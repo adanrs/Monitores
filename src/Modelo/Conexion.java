@@ -192,20 +192,17 @@ public class Conexion {
         }
     }
 
-    public float executeQuery() throws InterruptedException, SQLException {
-        int i = 0;
+    public float executeQuery(float total_memoria) throws InterruptedException, SQLException {
         float vec;
         float valor = 0;
-        float total_memoria = 0;
         Statement stm = null;
         ResultSet rs;
         try {
             stm = conexion.createStatement();
             rs = stm.executeQuery("select POOL, Round(bytes/1024/1024,0) MEMORIA_MB From V$sgastat Where Name Like '%free memory%'");
-            // System.out.println("Ejecutando");
             getColumnNames(rs);
             while (rs.next()) {
-                valor += rs.getFloat("MEMORIA_MB");// parsear valor 
+                valor += rs.getFloat("MEMORIA_MB");
             }
             stm.close();
         } catch (SQLException ex) {
@@ -215,6 +212,16 @@ public class Conexion {
                 stm.close();
             }
         }
+        valor = total_memoria - valor;// diferencia a la memoria libre 
+        valor = (valor / total_memoria) * 100;// porcentaje de memoria usada 
+        vec = valor;
+        return vec;
+    }
+
+    public float total_memoria() throws SQLException {
+        float total_memoria = 0;
+        Statement stm = null;
+        ResultSet rs;
         try {
             stm = conexion.createStatement();
             rs = stm.executeQuery("select sum(bytes)/1024/1024 mb from V$SGASTAT");
@@ -230,11 +237,6 @@ public class Conexion {
                 stm.close();
             }
         }
-
-        valor = total_memoria - valor;// diferencia a la memoria libre 
-        valor = (valor / total_memoria) * 100;// porcentaje de memoria usada 
-        vec = valor;
-        i++;
-        return vec;
+        return total_memoria;
     }
 }
