@@ -51,6 +51,10 @@ JTextField BHWM;
         panel.add(ini,BorderLayout.CENTER);
         panel.add(BHWM,BorderLayout.CENTER);
         panel.add(CHWM,BorderLayout.CENTER);
+        CHWM= new JButton("atras");
+        CHWM.setActionCommand("atras");
+        CHWM.addActionListener(this);
+        panel.add(CHWM,BorderLayout.CENTER);
         this.add(panel,BorderLayout.CENTER);
         setSize(600,300);
         setLocationRelativeTo(null);
@@ -90,6 +94,13 @@ JTextField BHWM;
                 Logger.getLogger(HWMSGA.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        if(e.getActionCommand().equals("atras"))
+                {
+                    this.dispose();
+                    VentIni ven= new VentIni(gestor);
+                    ven.ini();
+                }
     
     }
 
