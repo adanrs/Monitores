@@ -192,12 +192,12 @@ public class Conexion {
         }
     }
 
-    public float executeQuery() throws InterruptedException {
+    public float executeQuery() throws InterruptedException, SQLException {
         int i = 0;
         float vec;
         float valor = 0;
         float total_memoria = 0;
-        Statement stm;
+        Statement stm = null;
         ResultSet rs;
         try {
             stm = conexion.createStatement();
@@ -207,8 +207,13 @@ public class Conexion {
             while (rs.next()) {
                 valor += rs.getFloat("MEMORIA_MB");// parsear valor 
             }
+            stm.close();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
         }
         try {
             stm = conexion.createStatement();
@@ -217,9 +222,15 @@ public class Conexion {
             while (rs.next()) {
                 total_memoria = rs.getFloat("mb");
             }
+            stm.close();
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
         }
+
         valor = total_memoria - valor;// diferencia a la memoria libre 
         valor = (valor / total_memoria) * 100;// porcentaje de memoria usada 
         vec = valor;
