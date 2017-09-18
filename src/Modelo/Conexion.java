@@ -222,7 +222,6 @@ public class Conexion {
         }
         valor = total_memoria - valor;// diferencia a la memoria libre 
         valor = (valor / total_memoria) * 100;// porcentaje de memoria usada 
-        System.out.println("%" + valor);
         vec = valor;
         i++;
         return vec;
