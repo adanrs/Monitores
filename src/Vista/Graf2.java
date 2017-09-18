@@ -13,14 +13,13 @@ import javafx.scene.chart.AreaChart;
 
 public class Graf2 extends Application {
 
-    private int i;
     private int cont;
-
+    private boolean first;
     @Override
     public void start(Stage stage) {
-        i = 0;
-        cont = 0;
-        final NumberAxis xAxis = new NumberAxis(1, 10, 1);
+        first = true;
+        cont = 1;
+        final NumberAxis xAxis = new NumberAxis(0, 10, 1);
         final NumberAxis yAxis = new NumberAxis(0, 100, 10);
         Conexion c = new Conexion();
         c.conectar();
@@ -40,6 +39,10 @@ public class Graf2 extends Application {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
+                            if(first){
+                                series.getData().add(new XYChart.Data<>(0, 0));
+                                first = false;
+                            }
                             try {
                                 float value = c.executeQuery();
                                 series.getData().add(new XYChart.Data<>(cont, value));
@@ -47,14 +50,12 @@ public class Graf2 extends Application {
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(Graf2.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            cont++;
-                            if (i > 9) {
-                                xAxis.setUpperBound(cont - 1);
+                            if (cont > 10) {
+                                xAxis.setUpperBound(cont);
                                 xAxis.setLowerBound(cont - 10);
                                 series.getData().remove(0);
-                            } else {
-                                i++;
                             }
+                            cont++;
                         }
                     });
                     Thread.sleep(1000);
