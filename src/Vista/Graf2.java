@@ -41,7 +41,7 @@ public class Graf2 extends Application {
                         @Override
                         public void run() {
                             try {
-                                float value = c.executeQuery("select POOL, Round(bytes/1024/1024,0) MEMORIA_MB From V$sgastat Where Name Like '%free memory%'");
+                                float value = c.executeQuery();
                                 series.getData().add(new XYChart.Data<>(cont, value));
                                 series.setName("Porcentaje de uso: "+value+"%");
                             } catch (InterruptedException ex) {

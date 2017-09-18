@@ -13,6 +13,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -190,28 +192,34 @@ public class Conexion {
         }
     }
 
-    public float executeQuery(String statement) throws InterruptedException {
+    public float executeQuery() throws InterruptedException {
         int i = 0;
         float vec;
         float valor = 0;
+        float total_memoria = 0;
+        Statement stm;
+        ResultSet rs;
         try {
-            Statement stm = conexion.createStatement();
-            ResultSet rs = stm.executeQuery(statement);
+            stm = conexion.createStatement();
+            rs = stm.executeQuery("select POOL, Round(bytes/1024/1024,0) MEMORIA_MB From V$sgastat Where Name Like '%free memory%'");
             // System.out.println("Ejecutando");
             getColumnNames(rs);
             while (rs.next()) {
-
-                String a = rs.getString("POOL");//Aqui deberia jalar el nombre de la columna
-                String b = rs.getString("MEMORIA_MB");// valor columnas 
-
-                valor += Float.parseFloat(b); // parsear valor 
-                System.out.println(a + " " + " " + b);
-
+                valor += rs.getFloat("MEMORIA_MB");// parsear valor 
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        int total_memoria = 176;
+        try {
+            stm = conexion.createStatement();
+            rs = stm.executeQuery("select sum(bytes)/1024/1024 mb from V$SGASTAT");
+            getColumnNames(rs);
+            while (rs.next()) {
+                total_memoria = rs.getFloat("mb");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
         valor = total_memoria - valor;// diferencia a la memoria libre 
         valor = (valor / total_memoria) * 100;// porcentaje de memoria usada 
         System.out.println("%" + valor);
