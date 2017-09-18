@@ -15,11 +15,10 @@ import javafx.scene.chart.AreaChart;
 public class Graf2 extends Application {
 
     private int cont;
-    private boolean first;
     private float total_memoria;
+
     @Override
-    public void start(Stage stage)  {
-        first = true;
+    public void start(Stage stage) {
         cont = 1;
         final NumberAxis xAxis = new NumberAxis(0, 10, 1);
         final NumberAxis yAxis = new NumberAxis(0, 100, 10);
@@ -46,14 +45,11 @@ public class Graf2 extends Application {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            if(first){
-                                series.getData().add(new XYChart.Data<>(0, 0));
-                                first = false;
-                            }
+                            series.getData().add(new XYChart.Data<>(0, 0));
                             try {
-                                float value = c.executeQuery(total_memoria);
+                                float value = c.obtener_memoria_usada(total_memoria);
                                 series.getData().add(new XYChart.Data<>(cont, value));
-                                series.setName("Porcentaje de uso: "+value+"%");
+                                series.setName("Porcentaje de uso: " + value + "%");
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(Graf2.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (SQLException ex) {
@@ -81,4 +77,3 @@ public class Graf2 extends Application {
         launch(args);
     }
 }
-

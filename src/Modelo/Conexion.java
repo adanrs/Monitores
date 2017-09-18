@@ -192,7 +192,7 @@ public class Conexion {
         }
     }
 
-    public float executeQuery(float total_memoria) throws InterruptedException, SQLException {
+    public float obtener_memoria_usada(float total_memoria) throws InterruptedException, SQLException {
         float vec;
         float valor = 0;
         Statement stm = null;
